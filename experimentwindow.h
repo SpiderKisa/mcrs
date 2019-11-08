@@ -1,6 +1,9 @@
 #ifndef EXPERIMENTWINDOW_H
 #define EXPERIMENTWINDOW_H
 
+#define MAX_PATTERN_LENGTH 8
+#define MIN_PATTERN_LENGTH 3
+
 #include <QMainWindow>
 #include "mainwindow.h"
 #include <QtCharts>

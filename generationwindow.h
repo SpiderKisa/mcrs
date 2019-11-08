@@ -1,6 +1,11 @@
 #ifndef GENERATIONWINDOW_H
 #define GENERATIONWINDOW_H
 
+#define MAX_COUNT 1000000
+#define MAX_PATTERN_LENGTH 8
+#define MIN_PATTERN_LENGTH 3
+
+
 #include <QMainWindow>
 #include "mainwindow.h"
 

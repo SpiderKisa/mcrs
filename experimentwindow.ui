@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>445</width>
-    <height>602</height>
+    <width>364</width>
+    <height>225</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -33,16 +33,19 @@
      <string>Вернуться</string>
     </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>50</y>
-      <width>401</width>
-      <height>531</height>
+      <y>40</y>
+      <width>321</width>
+      <height>151</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_3">
+    <property name="title">
+     <string/>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
@@ -69,30 +72,16 @@
       </layout>
      </item>
      <item>
-      <widget class="QLabel" name="label_err2">
+      <widget class="QLabel" name="label_fileName">
        <property name="text">
         <string/>
        </property>
       </widget>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QPlainTextEdit" name="plainTextEdit"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_open">
-         <property name="text">
-          <string>Открыть файл</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_errFile">
+      <widget class="QPushButton" name="pushButton_open">
        <property name="text">
-        <string/>
+        <string>Открыть файл</string>
        </property>
       </widget>
      </item>
@@ -104,6 +93,32 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QLabel" name="label_err2">
+    <property name="geometry">
+     <rect>
+      <x>21</x>
+      <y>178</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_errFile">
+    <property name="geometry">
+     <rect>
+      <x>21</x>
+      <y>431</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

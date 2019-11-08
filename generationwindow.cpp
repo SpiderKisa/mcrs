@@ -15,13 +15,8 @@ GenerationWindow::GenerationWindow(QWidget *parent) :
     ui->setupUi(this);
     this->parent = parent;
 
-    for(int i = 1; i < 7; i++){
-        ui->comboBox_errMin->addItem(QString::number(i));
-    }
-    for(int i = 2; i < 8; i++){
-        ui->comboBox_errMax->addItem(QString::number(i));
-    }
-    ui->plainTextEdit->setMaximumBlockCount(-1);
+    ui->spinBox_min->setRange(MIN_PATTERN_LENGTH - 2, MAX_PATTERN_LENGTH - 2);
+    ui->spinBox_max->setRange(MIN_PATTERN_LENGTH - 1, MAX_PATTERN_LENGTH - 1);
 }
 
 
@@ -43,8 +38,7 @@ void GenerationWindow::on_pushButton_back_clicked()
 
 void GenerationWindow::on_pushButton_generate_clicked()
 {
-    ui->statusbar->showMessage("");
-    ui->plainTextEdit->setPlainText("");
+
     correct = true;
     ui->label_errMinError->setText("");
     ui->label_errMaxError->setText("");
@@ -66,16 +60,16 @@ void GenerationWindow::on_pushButton_generate_clicked()
         }
     }
 
-    if (pattern_length > 8){
+    if (pattern_length > MAX_PATTERN_LENGTH || pattern_length < MIN_PATTERN_LENGTH){
         if (ui->label_patternError->text() == ""){
-            ui->label_patternError->setText("<font color='red'>Длина слова не должна превышать 8 символов</font>");
+            ui->label_patternError->setText("<font color='red'>Длина слова должна находиться в диапазоне [" + QString::number(MIN_PATTERN_LENGTH) + ";" + QString::number(MAX_PATTERN_LENGTH) + "]</font>");
         } else {
-            ui->label_patternError_2->setText("<font color='red'>Длина слова не должна превышать 8 символов</font>");
+            ui->label_patternError_2->setText("<font color='red'>Длина слова должна находиться в диапазоне [" + QString::number(MIN_PATTERN_LENGTH) + ";" + QString::number(MAX_PATTERN_LENGTH) + "]</font>");
         }
         correct = false;
     }
-    err_min = ui->comboBox_errMin->currentIndex() + 1;
-    err_max = ui->comboBox_errMax->currentIndex() + 2;
+    err_min = ui->spinBox_min->value();
+    err_max = ui->spinBox_max->value();
     if (err_min >= pattern_length){
         ui->label_errMinError->setText("<font color='red'>Минимальное число ошибок должно быть меньше длины образца</font>");
         correct = false;
@@ -95,15 +89,15 @@ void GenerationWindow::on_pushButton_generate_clicked()
 
     count = ui->lineEdit_count->text().toInt();
 
-    if (count < 1 || count > 1000000){
-        ui->label_countError->setText("<font color='red'>Количество слов должно находиться в диапазоне  [1; 1000000]</font>");
+    if (count < 1 || count > MAX_COUNT){
+        ui->label_countError->setText("<font color='red'>Количество слов должно находиться в диапазоне  [1; " + QString::number(MAX_COUNT) + "]</font>");
         correct = false;
     }
 
     if(correct){
-        //ui->statusbar->showMessage("Генерация...");
+
         generate();
-        ui->statusbar->showMessage("Генерация завершена");
+
     }
 
 }
@@ -186,7 +180,6 @@ void GenerationWindow::generate(){
             }
 
             in << word << " ";          //записать слово в файл
-            //ui->plainTextEdit->appendPlainText(word);
         }
 
         in <<'\n';

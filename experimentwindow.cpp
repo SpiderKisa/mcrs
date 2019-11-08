@@ -35,6 +35,16 @@ void ExperimentWindow::on_pushButton_open_clicked()
                                                     "C:/Users/super hacka/Desktop/course/build-bitap-Desktop_Qt_5_12_5_MinGW_32_bit-Debug/gen",
                                                     tr("Файл .txt (*.txt)"));
 
+
+}
+
+void ExperimentWindow::on_pushButton_experiment_clicked()
+{
+    bool correct = true;
+    if (fName == ""){
+        ui->label_errFile->setText("<font color='red'>Файл не выбран</font>");
+        correct = false;
+    }
     QString fileName = fName;
     fileName.remove(0, fileName.indexOf("gen/") + 4);
     fileName.remove(0, fileName.indexOf("-") + 1);
@@ -43,17 +53,11 @@ void ExperimentWindow::on_pushButton_open_clicked()
      f.open(QFile::ReadOnly | QFile::Text);
      QTextStream out(&f);
      QString txt = out.readAll();
-     //ui->plainTextEdit->setPlainText(txt);
      text = txt.toLocal8Bit().constData();
      n = text.length();
 
-}
-
-void ExperimentWindow::on_pushButton_experiment_clicked()
-{
     pattern = ui->lineEdit_pattern->text().toLocal8Bit().constData();
     int m = pattern.length();
-    bool correct = true;
     if (m ==  0){
         ui->label_err->setText("<font color='red'>Введите слово</font>");
         correct = false;
@@ -66,22 +70,18 @@ void ExperimentWindow::on_pushButton_experiment_clicked()
         }
     }
 
-    if (m > 8){
+    if (m > MAX_PATTERN_LENGTH || m < MIN_PATTERN_LENGTH){
         if (ui->label_err->text() == ""){
-            ui->label_err->setText("<font color='red'>Длина слова не должна превышать 8 символов</font>");
+            ui->label_err->setText("<font color='red'>Длина слова должна находиться в диапазоне [" + QString::number(MIN_PATTERN_LENGTH) + ";" + QString::number(MAX_PATTERN_LENGTH) + "]</font>");
         } else {
-            ui->label_err2->setText("<font color='red'>Длина слова не должна превышать 8 символов</font>");
+            ui->label_err2->setText("<font color='red'>Длина слова должна находиться в диапазоне [" + QString::number(MIN_PATTERN_LENGTH) + ";" + QString::number(MAX_PATTERN_LENGTH) + "]в</font>");
         }
         correct = false;
     }
 
-    if (fName == ""){
-        ui->label_errFile->setText("<font color='red'>Файл не выбран</font>");
-        correct = false;
-    }
+
 
     if (correct){
-        /*QVector<QLineSeries*> series = */
         QVector<QChartView*> view = experiment();
         fw = new ChartWindow(this, view[0]);
         fw->show();
@@ -96,7 +96,10 @@ QVector<QChartView*> ExperimentWindow::experiment(){
 
     int found = 0;
     int op = 0;
-    QLineSeries *series_found = new QLineSeries();
+     QStringList categories;
+     QBarSeries *series_found = new QBarSeries();
+    QBarSet *set_found = new QBarSet("Количество найденных слов");
+    //QLineSeries *series_found = new QLineSeries();
     QLineSeries *series_op = new QLineSeries();
 
 
@@ -157,12 +160,12 @@ QVector<QChartView*> ExperimentWindow::experiment(){
            r[0][j] = ((r[0][j-1] >> 1) | sh) & masks[text[j - 1] - 0x61];
            op += 3;
            if ((r[0][j] & (unsigned long)1) == 1){
-               //cout << j << endl;
                 found++;
            }
        }
-
-       series_found->append(0, found);
+       categories << QString::number(0);
+        *set_found << found;
+       //series_found->append(0, found);
        series_op->append(0, op);
 
 
@@ -181,17 +184,19 @@ QVector<QChartView*> ExperimentWindow::experiment(){
 
        for (int i = 1; i <= err; i++){
 
-           found /*= op*/ = 0;
+           found = 0;
            for (int j = 1; j <= n; j++){
                r[i][j] = (((r[i][j - 1] >> (unsigned long)1) | sh) & masks[text[j - 1] - 0x61]) |
                        (((r[i - 1][j - 1] | r[i - 1][j]) >> (unsigned long)1) | sh) | r[i - 1][j -1];
                op += 8;
                if ((r[i][j] & (unsigned long)1) == 1){
-                   //cout << j << endl;
+
                    found++;
                }
            }
-           series_found->append(i, found);
+           categories << QString::number(i);
+           *set_found << found;
+           //series_found->append(i, found);
            series_op->append(i, op);
 
        }
@@ -199,8 +204,16 @@ QVector<QChartView*> ExperimentWindow::experiment(){
        QVector<QChartView*> view;
         QChart *chart_found = new QChart();
         chart_found->legend()->hide();
+        series_found->append(set_found);
         chart_found->addSeries(series_found);
-        chart_found->createDefaultAxes();
+        QBarCategoryAxis *axisX = new QBarCategoryAxis();
+        axisX->append(categories);
+        chart_found->addAxis(axisX, Qt::AlignBottom);
+        series_found->attachAxis(axisX);
+        QValueAxis *axisY = new QValueAxis();
+        axisY->setRange(0, found);
+        chart_found->addAxis(axisY, Qt::AlignLeft);
+        series_found->attachAxis(axisY);
         chart_found->setTitle("Зависимость количества найденных слов от количества ошибок");
         QChartView *chartView_found = new QChartView(chart_found);
         chartView_found->setRenderHint(QPainter::Antialiasing);

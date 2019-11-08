@@ -8,8 +8,6 @@ ChartWindow::ChartWindow(QWidget *parent, QChartView *chart) :
     ui(new Ui::ChartWindow)
 {
     ui->setupUi(this);
-    //QChartView *chartView = new QChartView(chart);
-    //chartView_op->setRenderHint(QPainter::Antialiasing);
     this->setCentralWidget(chart);
     this->resize(800, 600);
    
